@@ -140,7 +140,7 @@ export default function MarketInsightsPage() {
         </div>
 
         {/* Insights Feed - Inshorts style */}
-        <h2 className="font-heading text-xl font-bold mb-4">Today's Insights</h2>
+        <h2 className="font-heading text-xl font-bold mb-4">Latest Insights</h2>
         <div className="grid gap-4 md:grid-cols-2">
           {marketInsights.map((item) => (
             <div key={item.id} className="glass-card p-5 cursor-pointer transition-all hover:border-primary/30" onClick={() => setSelectedInsight(item)}>

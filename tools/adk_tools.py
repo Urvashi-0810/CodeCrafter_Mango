@@ -32,6 +32,7 @@ def generate_analysis_report(portfolio: Dict[str, Any]) -> Dict[str, Any]:
 def fetch_complete_market_data(symbol: str) -> Dict[str, Any]:
     """Fetch stock data, news, sentiment, and analyst ratings."""
     market_tools = MarketDataTools()
+    print(f"Fetching market data for {symbol}...")
     return {
         "stock_data": market_tools.scrape_stock_data(symbol),
         "news": market_tools.fetch_company_news(symbol),

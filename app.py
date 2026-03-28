@@ -4,6 +4,7 @@ import json
 import asyncio
 import tempfile
 import uuid
+import re
 from contextlib import aclosing
 from google.adk.sessions import InMemorySessionService
 import traceback
@@ -16,6 +17,8 @@ from agents import CollaborativeAgents
 from agents.adk_agents import full_analysis_agent
 from google.adk import Runner
 from google.genai import types
+from tools.adk_tools import force_market_analysis
+from tools.market_tools import SYMBOL_MAP
 
 # Ensure proper path handling
 sys.path.insert(0, os.path.dirname(__file__))
@@ -128,7 +131,69 @@ def create_app():
             print(f"[INFO] Extracted text length: {len(extracted_text)}")
             print(f"[INFO] Extracted text preview:\n{extracted_text[:300]}")
 
-            # Wrap OCR text
+            # ========== VALIDATE & EXTRACT STOCK SYMBOL ==========
+            print("[STEP] Extracting stock symbol from OCR text...")
+            
+            # Look for common stock symbol patterns
+            symbol_patterns = [
+                r'\b([A-Z]{2,}IND)\b',  # Matches TENNIND, BCCL, etc.
+                r'\b([A-Z]{2,})\b(?=\n.*(?:Invested|P&L|Holdings))',  # Symbol before portfolio data
+                r'(?:^|\n)([A-Z]{2,})(?:\s+.*)?(?:Invested|Holdings|Current)',  # Symbol before portfolio keywords
+            ]
+            
+            detected_symbol = None
+            for pattern in symbol_patterns:
+                match = re.search(pattern, extracted_text, re.MULTILINE)
+                if match:
+                    candidate = match.group(1).upper().strip()
+                    # Validate against SYMBOL_MAP
+                    if candidate in SYMBOL_MAP:
+                        detected_symbol = candidate
+                        print(f"[INFO] Detected stock symbol from OCR: {detected_symbol}")
+                        break
+                    else:
+                        print(f"[DEBUG] Found candidate '{candidate}' but not in SYMBOL_MAP")
+            
+            if detected_symbol:
+                print(f"\n[INFO] ===== SYMBOL VALIDATION PASSED =====")
+                print(f"[INFO] Symbol: {detected_symbol}")
+                print(f"[INFO] Calling force_market_analysis directly (bypassing LLM)...")
+                print(f"[INFO] =====================================\n")
+                
+                try:
+                    market_analysis = force_market_analysis(detected_symbol)
+                    
+                    # Extract comprehensive report
+                    if market_analysis.get("success"):
+                        final_report = market_analysis.get("report", "")
+                        print("[SUCCESS] Forced market analysis completed successfully")
+                    else:
+                        final_report = f"Analysis failed: {market_analysis.get('error', 'Unknown error')}"
+                        print("[ERROR] Forced market analysis returned success=False")
+                    
+                    print(f"[INFO] Generated report length: {len(final_report)} characters")
+                    
+                    print("[STEP] Sending response to client...")
+                    return jsonify({
+                        "success": True,
+                        "ocr_text": extracted_text,
+                        "detected_symbol": detected_symbol,
+                        "analysis_type": "forced_market_analysis",
+                        "report": final_report,
+                        "raw_data": market_analysis.get("raw_data", {}),
+                        "timestamp": market_analysis.get("timestamp", "")
+                    }), 200
+                
+                except Exception as e:
+                    print(f"[ERROR] forced_market_analysis failed: {e}")
+                    print(traceback.format_exc())
+                    # Fall through to ADK pipeline as backup
+            else:
+                print(f"[WARNING] No valid stock symbol detected in OCR text")
+                print(f"[WARNING] Available symbols: {list(SYMBOL_MAP.keys())}")
+                print(f"[INFO] Proceeding with ADK pipeline for generic analysis")
+
+            # ========== FALLBACK: ADK PIPELINE / GENERIC ANALYSIS ==========
             print("[STEP] Preparing input for ADK pipeline...")
             input_data = {"raw_text": extracted_text}
             user_input = json.dumps(input_data)
@@ -158,6 +223,7 @@ def create_app():
 
                 content = types.Content(role="user", parts=[types.Part(text=payload)])
                 final_report = ""
+                function_calls_made = []
 
                 try:
                     print("[ASYNC] Starting runner.run_async()")
@@ -176,10 +242,22 @@ def create_app():
                             print("[ASYNC] Event received")
 
                             if event.content and event.content.parts:
-                                text = "".join(part.text or "" for part in event.content.parts)
-                                if text:
-                                    print("[ASYNC] Received text chunk")
-                                    final_report = text
+                                # Extract ALL parts - text AND function_call
+                                for part in event.content.parts:
+                                    if hasattr(part, 'text') and part.text:
+                                        print("[ASYNC] Received text chunk")
+                                        final_report += part.text
+                                    elif hasattr(part, 'function_call') and part.function_call:
+                                        print(f"[ASYNC] Received function_call: {part.function_call.name}")
+                                        function_calls_made.append({
+                                            "name": part.function_call.name,
+                                            "args": getattr(part.function_call, 'args', {})
+                                        })
+                        
+                        if function_calls_made:
+                            print(f"[ASYNC] Function calls captured: {len(function_calls_made)}")
+                            for fc in function_calls_made:
+                                print(f"  - {fc['name']}: {fc['args']}")
 
                 except Exception as e:
                     print("[ASYNC ERROR]", e)

@@ -38,6 +38,12 @@ SYMBOL_MAP: Dict[str, Dict[str, str]] = {
         "screener_slug": "HDFCBANK",
         "mc_slug":       "banks-private-sector/hdfcbank/HDF01",
     },
+    "TENNIND": {
+        "nse_slug":      "TENNIND/Tenneco-Industries-Limited",
+        "bse_slug":      "tenneco-industries-ltd/tennind/507685",
+        "screener_slug": "TENNIND",
+        "mc_slug":       "auto-ancillaries-engine-parts/tennecoindustries/TENNIND",
+    },
     # ── add more symbols below ────────────────────────────────────────────
 }
 
@@ -64,7 +70,19 @@ class MarketDataTools:
     def __init__(self):
         """Initialize market data tools."""
         self.api_key   = os.getenv("FIRECRAWL_API_KEY")
-        self.firecrawl = FirecrawlApp(api_key=self.api_key) if self.api_key else None
+        print(f"[INIT] FIRECRAWL_API_KEY from env: {self.api_key}")
+        
+        if self.api_key:
+            try:
+                self.firecrawl = FirecrawlApp(api_key=self.api_key)
+                print(f"[INIT] FirecrawlApp initialized successfully")
+            except Exception as e:
+                print(f"[INIT] FirecrawlApp initialization failed: {e}")
+                self.firecrawl = None
+        else:
+            print(f"[INIT] FIRECRAWL_API_KEY not found in environment")
+            self.firecrawl = None
+        
         self.cache: Dict[str, Any] = {}
 
     # ------------------------------------------------------------------
@@ -107,6 +125,7 @@ class MarketDataTools:
         self, symbol: str, source: str = "moneycontrol"
     ) -> Dict[str, Any]:
         """Scrape stock data from a trusted source."""
+        print(f"[SCRAPER] scrape_stock_data() called for {symbol} from {source}")
         if not self.firecrawl:
             print("[DEBUG] Firecrawl not initialized in scrape_stock_data()")
             return {"error": "Firecrawl not initialized"}
@@ -116,6 +135,7 @@ class MarketDataTools:
 
         symbol = symbol.upper()
         url    = self.build_url(symbol, source)
+        print(f"[SCRAPER] URL built for {symbol}: {url}")
 
         if url is None:
             return {
@@ -129,8 +149,21 @@ class MarketDataTools:
         try:
             print(f"Scraping {symbol} from {source} → {url}")
             result   = self.firecrawl.scrape_url(url, {"formats": ["markdown"]})
+            
+            # Validate Firecrawl response
+            if not result or not result.get("markdown"):
+                print(f"[ERROR] Empty response from Firecrawl for {symbol}")
+                return {
+                    "success": False,
+                    "error": "Empty response from Firecrawl",
+                    "symbol": symbol,
+                    "source": source,
+                    "url": url
+                }
+            
             markdown = result.get("markdown", "")
-            print(f"Preview: {markdown[:200]}...")
+            print(f"[SCRAPER] Scraped markdown length: {len(markdown)} characters")
+            print(f"[SCRAPER] Preview (first 500 chars):\n{markdown[:500]}\n...")
 
             return {
                 "success":   True,
@@ -138,9 +171,13 @@ class MarketDataTools:
                 "source":    source,
                 "url":       url,
                 "data":      markdown,
+                "data_length": len(markdown),
                 "timestamp": datetime.now().isoformat(),
             }
         except Exception as e:
+            print(f"[ERROR] Exception in scrape_stock_data: {e}")
+            import traceback
+            traceback.print_exc()
             return {"success": False, "error": str(e)}
 
     # ------------------------------------------------------------------

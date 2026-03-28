@@ -9,9 +9,33 @@ from tools.market_tools import MarketDataTools
 from tools.portfolio_tools import PortfolioParsingTools
 from tools.simulation_tools import SimulationTools
 
+
+def _normalize_portfolio_payload(portfolio: Dict[str, Any]) -> Dict[str, Any]:
+    """Normalize common wrapper formats to the canonical portfolio schema."""
+    if not isinstance(portfolio, dict):
+        return {}
+
+    # CSV parser often returns {"success": True, "data": {...portfolio...}}
+    if isinstance(portfolio.get("data"), dict):
+        return portfolio["data"]
+
+    # Formatter may return {"success": True, "portfolio": {...portfolio...}}
+    if isinstance(portfolio.get("portfolio"), dict):
+        return portfolio["portfolio"]
+
+    # Some agents output holdings instead of stocks.
+    if isinstance(portfolio.get("holdings"), list) and "stocks" not in portfolio:
+        normalized = dict(portfolio)
+        normalized["stocks"] = portfolio.get("holdings", [])
+        return normalized
+
+    return portfolio
+
 # ========== Analysis Functions ==========
 def calculate_portfolio_metrics(portfolio: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate key portfolio metrics."""
+    # print(f"Calculating portfolio metrics for portfolio: {portfolio}")
+    portfolio = _normalize_portfolio_payload(portfolio)
     return {
         "total_investment": AnalysisTools.calculate_total_investment(portfolio),
         "current_value": AnalysisTools.calculate_current_value(portfolio),
@@ -26,6 +50,7 @@ def calculate_portfolio_metrics(portfolio: Dict[str, Any]) -> Dict[str, Any]:
 
 def generate_analysis_report(portfolio: Dict[str, Any]) -> Dict[str, Any]:
     """Generate comprehensive analysis report."""
+    portfolio = _normalize_portfolio_payload(portfolio)
     return AnalysisTools.generate_analysis_report(portfolio)
 
 # ========== Market Functions ==========
@@ -52,6 +77,7 @@ def classify_holdings(holdings: List[str]) -> Dict[str, str]:
 # ========== Simulation Functions ==========
 def simulate_returns(portfolio: Dict[str, Any], years: int = 5, annual_return: float = 12.0) -> Dict[str, Any]:
     """Simulate portfolio returns over given years."""
+    portfolio = _normalize_portfolio_payload(portfolio)
     return SimulationTools.simulate_returns(portfolio, years, annual_return)
 
 def add_stock_to_portfolio(portfolio: Dict[str, Any], symbol: str, quantity: int,

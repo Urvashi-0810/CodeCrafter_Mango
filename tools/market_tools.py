@@ -11,7 +11,7 @@ load_dotenv()
 
 class MarketDataTools:
     """Tools for fetching market data and financial information"""
-    
+    print("Initializing MarketDataTools with Firecrawl integration...")
     TRUSTED_SOURCES = {
         "nse": "https://www.nseindia.com",
         "bse": "https://www.bseindia.com",
@@ -41,9 +41,10 @@ class MarketDataTools:
             return {"error": f"Source '{source}' not in trusted sources"}
         
         try:
+            print(f"Scraping stock data for {symbol} from {source}...")
             url = f"{self.TRUSTED_SOURCES[source]}/stocks/{symbol}"
             result = self.firecrawl.scrape_url(url, {"formats": ["markdown"]})
-            
+            print(f"Results for {symbol} from {source}: {result.get('markdown')[:200]}...")  # Print first 200 chars
             return {
                 "success": True,
                 "symbol": symbol,
@@ -62,8 +63,9 @@ class MarketDataTools:
             if not self.firecrawl:
                 return {"error": "Firecrawl not initialized"}
             
+            print(f"Fetching news for {symbol} from Economic Times...")
             result = self.firecrawl.scrape_url(url, {"formats": ["markdown"]})
-            
+            print(f"News results for {symbol}: {result.get('markdown')[:200]}...")  # Print first 200 chars
             return {
                 "success": True,
                 "symbol": symbol,
@@ -81,8 +83,9 @@ class MarketDataTools:
             if not self.firecrawl:
                 return {"error": "Firecrawl not initialized"}
             
+            print(f"Fetching financial reports for {symbol}...")
             result = self.firecrawl.scrape_url(url, {"formats": ["markdown"]})
-            
+            print(f"Financial reports for {symbol}: {result.get('markdown')[:200]}...")  # Print first 200 chars
             return {
                 "success": True,
                 "symbol": symbol,
@@ -99,9 +102,10 @@ class MarketDataTools:
             
             if not self.firecrawl:
                 return {"error": "Firecrawl not initialized"}
-            
+            print(f"Fetching sector performance for {sector}...")
             result = self.firecrawl.scrape_url(url, {"formats": ["markdown"]})
-            
+            print(f"Sector performance for {sector}: {result.get('markdown')[:200]}...")  # Print first 200 chars
+
             return {
                 "success": True,
                 "sector": sector,
@@ -125,6 +129,7 @@ class MarketDataTools:
             if not self.firecrawl:
                 return {"error": "Firecrawl not initialized"}
             
+            print("Fetching economic news and RBI updates...")
             for url in urls:
                 try:
                     result = self.firecrawl.scrape_url(url, {"formats": ["markdown"]})
@@ -132,6 +137,7 @@ class MarketDataTools:
                         "source": url,
                         "content": result.get("markdown")
                     })
+                    print(f"Fetched news from {url}: {result.get('markdown')[:200]}...")  # Print first 200 chars
                 except:
                     continue
             
@@ -150,9 +156,10 @@ class MarketDataTools:
             
             if not self.firecrawl:
                 return {"error": "Firecrawl not initialized"}
-            
+            print(f"Fetching analyst ratings for {symbol}...")
             result = self.firecrawl.scrape_url(url, {"formats": ["markdown"]})
-            
+            print(f"Analyst ratings for {symbol}: {result.get('markdown')[:200]}...")  # Print first 200 chars
+
             return {
                 "success": True,
                 "symbol": symbol,

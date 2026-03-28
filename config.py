@@ -4,11 +4,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    """Base configuration"""
     DEBUG = False
     TESTING = False
     FLASK_ENV = "production"
-    GEMINI_MODEL = "gemini-2.5-flash"
+    GEMINI_MODEL = "gemini-2.5-flash"  
     GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
     FIRECRAWL_API_KEY = os.getenv("FIRECRAWL_API_KEY")
     

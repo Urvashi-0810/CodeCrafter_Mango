@@ -143,11 +143,13 @@ class SimulationTools:
         
         for year in range(1, years + 1):
             projected_value = current_value * ((1 + annual_return_rate/100) ** year)
+            gain = projected_value - current_value
+            gain_percentage = 0.0 if current_value == 0 else (gain / current_value * 100)
             projected_values.append({
                 "year": year,
                 "projected_value": round(projected_value, 2),
-                "gain": round(projected_value - current_value, 2),
-                "gain_percentage": round(((projected_value - current_value) / current_value * 100), 2)
+                "gain": round(gain, 2),
+                "gain_percentage": round(gain_percentage, 2)
             })
         
         return {

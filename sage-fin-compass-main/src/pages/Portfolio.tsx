@@ -66,7 +66,7 @@ export default function PortfolioPage() {
     { id: 2, type: "dividend", title: "Dividend Optimization", action: "Add", symbol: "ITC", shares: 30, reason: "FMCG diversification and dividend income", applied: false, impact: "Medium", bg: "bg-yellow-50 dark:bg-yellow-900/10", border: "border-yellow-200 dark:border-yellow-700/50" },
     { id: 3, type: "rebalance", title: "Portfolio Rebalancing", action: "Reduce", symbol: "INFY", shares: 20, reason: "Trim IT overweight, lock in gains", applied: false, impact: "High", bg: "bg-red-50 dark:bg-red-900/10", border: "border-red-200 dark:border-red-700/50" },
     { id: 4, type: "tax", title: "Tax-Loss Harvesting Opportunity", action: "Monitor", symbol: "None", shares: 0, reason: "No current losses. Your portfolio is performing well.", applied: true, impact: "Low", bg: "bg-green-50 dark:bg-green-900/10", border: "border-green-200 dark:border-green-700/50" },
-    { id: 5, type: "growth_2", title: "Real Estate Push", action: "Add", symbol: "DLF", shares: 15, reason: "Real estate sector bet on infrastructure push", applied: false, impact: "Low", bg: "bg-blue-50 dark:bg-blue-900/10", border: "border-blue-200 dark:border-blue-700/50" }
+    { id: 5, type: "growth_2", title: "Real Estate Push", action: "Add", symbol: "DLF", shares: 15, reason: "Real estate sector bet on infrastructure push", applied: false, impact: "Low", bg: "bg-primary/10 dark:bg-primary/10", border: "border-blue-200 dark:border-blue-700/50" }
   ]);
 
   const applyRecommendation = (rec: any) => {
@@ -269,9 +269,9 @@ export default function PortfolioPage() {
 
         {/* Import Portfolio Section */}
         {uploadState === 'idle' && (
-          <div className="mb-6 flex flex-col sm:flex-row items-center justify-between rounded-xl border border-blue-100 bg-[#f8faff] p-5 shadow-sm dark:border-blue-900/40 dark:bg-blue-950/20">
+          <div className="mb-6 flex flex-col sm:flex-row items-center justify-between rounded-xl border border-primary/20 bg-primary/5 p-5 shadow-sm dark:border-primary/40 dark:bg-blue-950/20">
             <div className="flex items-center gap-4 w-full">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#e0eafe] text-[#0f62fe] dark:bg-blue-900/50 dark:text-blue-400">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary dark:bg-primary/50 dark:text-primary">
                 <Upload className="h-5 w-5" />
               </div>
               <div className="flex-1">
@@ -289,7 +289,7 @@ export default function PortfolioPage() {
               />
               <Button 
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full sm:w-auto bg-[#0f62fe] text-white hover:bg-[#0353e9] h-10 px-6 rounded-md font-medium shadow-sm transition-colors"
+                className="w-full sm:w-auto bg-primary text-white hover:bg-primary/90 h-10 px-6 rounded-md font-medium shadow-sm transition-colors"
               >
                 Choose File
               </Button>
@@ -298,18 +298,18 @@ export default function PortfolioPage() {
         )}
 
         {uploadState === 'uploading' && (
-          <div className="mb-6 flex items-center justify-center rounded-xl border border-blue-100 bg-[#f8faff] p-8 shadow-sm dark:border-blue-900/40 dark:bg-blue-950/20">
+          <div className="mb-6 flex items-center justify-center rounded-xl border border-primary/20 bg-primary/5 p-8 shadow-sm dark:border-primary/40 dark:bg-blue-950/20">
             <div className="flex flex-col items-center gap-3">
-              <Loader2 className="h-8 w-8 text-[#0f62fe] animate-spin" />
+              <Loader2 className="h-8 w-8 text-primary animate-spin" />
               <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Reading your file...</p>
             </div>
           </div>
         )}
 
         {uploadState === 'preview' && uploadedFile && (
-          <div className="mb-6 flex flex-col sm:flex-row items-center justify-between rounded-xl border border-blue-100 bg-[#f8faff] p-5 shadow-sm dark:border-blue-900/40 dark:bg-blue-950/20">
+          <div className="mb-6 flex flex-col sm:flex-row items-center justify-between rounded-xl border border-primary/20 bg-primary/5 p-5 shadow-sm dark:border-primary/40 dark:bg-blue-950/20">
             <div className="flex items-center gap-4 w-full">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#e0eafe] text-[#0f62fe] dark:bg-blue-900/50 dark:text-blue-400">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary dark:bg-primary/50 dark:text-primary">
                 <FileText className="h-5 w-5" />
               </div>
               <div className="flex-1">
@@ -321,7 +321,7 @@ export default function PortfolioPage() {
             </div>
             <div className="mt-4 sm:mt-0 w-full sm:w-auto flex shrink-0 gap-3">
               <Button variant="outline" className="h-10 px-6 font-medium rounded-md" onClick={cancelImport}>Cancel</Button>
-              <Button className="bg-[#0f62fe] hover:bg-[#0353e9] text-white h-10 px-6 font-medium rounded-md" onClick={confirmImport}>Confirm Import</Button>
+              <Button className="bg-primary hover:bg-primary/90 text-white h-10 px-6 font-medium rounded-md" onClick={confirmImport}>Confirm Import</Button>
             </div>
           </div>
         )}
@@ -350,7 +350,7 @@ export default function PortfolioPage() {
               onClick={() => setActiveTab(tab.toLowerCase())}
               className={`py-2 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap ${
                 activeTab === tab.toLowerCase() 
-                ? 'border-[#0f62fe] text-[#0f62fe] dark:text-blue-400 dark:border-blue-400' 
+                ? 'border-primary text-primary dark:text-primary dark:border-primary/50' 
                 : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
               }`}
             >
@@ -508,16 +508,16 @@ export default function PortfolioPage() {
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="glass-card p-6">
-                 <h3 className="font-heading text-lg font-bold flex items-center gap-2 mb-6"><BarChart2 className="h-5 w-5 text-[#0f62fe]"/> Sector Allocation</h3>
+                 <h3 className="font-heading text-lg font-bold flex items-center gap-2 mb-6"><BarChart2 className="h-5 w-5 text-primary"/> Sector Allocation</h3>
                  <div className="space-y-5">
                    {sortedSectors.map(s => (
                      <div key={s.name}>
                        <div className="flex justify-between text-sm mb-2 font-medium">
                          <span className="text-muted-foreground">{s.name}</span>
-                         <span className="text-[#0f62fe] font-bold">{s.value}%</span>
+                         <span className="text-primary font-bold">{s.value}%</span>
                        </div>
                        <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                         <div className="h-full bg-[#0f62fe] transition-all duration-500 rounded-full" style={{ width: `${s.value}%` }} />
+                         <div className="h-full bg-primary transition-all duration-500 rounded-full" style={{ width: `${s.value}%` }} />
                        </div>
                      </div>
                    ))}
@@ -601,7 +601,7 @@ export default function PortfolioPage() {
                </div>
             </div>
 
-            <div className="bg-blue-50/70 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-xl p-6 mt-6 shadow-sm">
+            <div className="bg-primary/10 dark:bg-primary/10 border border-primary/20 dark:border-primary/30 rounded-xl p-6 mt-6 shadow-sm">
               <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4">Next Steps</h3>
               <ol className="list-decimal list-outside ml-4 space-y-2.5 text-sm text-slate-600 dark:text-slate-400 font-medium font-sans">
                 {isConcentrated ? <li>Execute recommended rebalancing actions</li> : <li><strike className="text-slate-400">Execute recommended rebalancing actions</strike> <span className="text-green-600 ml-1">✓ Done</span></li>}
@@ -616,8 +616,8 @@ export default function PortfolioPage() {
 
         {activeTab === 'recommendations' && (
           <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/40 rounded-xl p-5 mb-6 shadow-sm">
-               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0f62fe] text-white">
+             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/40 rounded-xl p-5 mb-6 shadow-sm">
+               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-white">
                  <Zap className="h-5 w-5" />
                </div>
                <div>
@@ -639,7 +639,7 @@ export default function PortfolioPage() {
                     <Button 
                       onClick={() => !rec.applied && applyRecommendation(rec)}
                       disabled={rec.applied}
-                      className={`shrink-0 w-full sm:w-28 font-semibold ${rec.applied ? 'bg-blue-50 text-blue-400 hover:bg-blue-50 cursor-default border-none dark:bg-blue-900/20 dark:text-blue-500' : 'bg-[#0f62fe]/10 text-[#0f62fe] hover:bg-[#0f62fe]/20 dark:bg-blue-900/40 dark:text-blue-400'}`}
+                      className={`shrink-0 w-full sm:w-28 font-semibold ${rec.applied ? 'bg-primary/10 text-primary hover:bg-primary/10 cursor-default border-none dark:bg-primary/20 dark:text-primary' : 'bg-primary/10 text-primary hover:bg-primary/20 dark:bg-primary/40 dark:text-primary'}`}
                       variant="secondary"
                     >
                       {rec.applied ? 'Applied' : 'Apply'}

@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Briefcase, Upload, Plus, Trash2, TrendingUp, TrendingDown,
-  Sparkles, AlertCircle, ArrowUpRight, ArrowDownRight, RefreshCw
+  Sparkles, AlertCircle, ArrowUpRight, ArrowDownRight, RefreshCw, FileText, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import TickerBar from "@/components/TickerBar";
 import { samplePortfolio, companyStocks, sectorAllocation, type PortfolioStock } from "@/data/dummyData";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { toast } from "sonner";
 
 const aiInsights = [
   {
@@ -53,6 +54,44 @@ export default function PortfolioPage() {
   const [newQty, setNewQty] = useState("");
   const [uploaded, setUploaded] = useState(true);
 
+  const [uploadState, setUploadState] = useState<'idle' | 'uploading' | 'preview' | 'success'>('idle');
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadState('uploading');
+      // Simulate file reading delay
+      setTimeout(() => {
+        setUploadedFile(file);
+        setUploadState('preview');
+      }, 1500);
+    }
+  };
+
+  const confirmImport = () => {
+    toast.success(`${uploadedFile?.name} imported successfully!`);
+    setUploadState('success');
+    
+    // Auto-reset UI after 3 seconds
+    setTimeout(() => {
+      setUploadState('idle');
+      setUploadedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }, 3000);
+  };
+
+  const cancelImport = () => {
+    setUploadState('idle');
+    setUploadedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const totalInvested = portfolio.reduce((sum, s) => sum + s.avgPrice * s.quantity, 0);
   const totalCurrent = portfolio.reduce((sum, s) => sum + s.currentPrice * s.quantity, 0);
   const totalPnL = totalCurrent - totalInvested;
@@ -69,25 +108,32 @@ export default function PortfolioPage() {
   const colors = ["hsl(160,84%,39%)", "hsl(217,91%,60%)", "hsl(38,92%,50%)", "hsl(270,76%,55%)", "hsl(0,72%,51%)", "hsl(160,60%,50%)"];
 
   const handleAddStock = () => {
-    const stock = companyStocks.find((s) => s.symbol === newSymbol.toUpperCase());
-    if (!stock || !newQty) return;
-    const existing = portfolio.find((p) => p.symbol === stock.symbol);
+    if (!newSymbol || !newQty) return;
+
+    const symbolUpper = newSymbol.toUpperCase();
+    const stockMatch = companyStocks.find((s) => s.symbol === symbolUpper);
+
+    const existing = portfolio.find((p) => p.symbol === symbolUpper);
+    const priceToUse = stockMatch ? stockMatch.price : 1050; // Random mock price if not found
+    const sectorToUse = stockMatch ? stockMatch.sector : "Other";
+    const nameToUse = stockMatch ? stockMatch.name : symbolUpper;
+
     if (existing) {
       setPortfolio(
         portfolio.map((p) =>
-          p.symbol === stock.symbol
-            ? { ...p, quantity: p.quantity + parseInt(newQty), avgPrice: ((p.avgPrice * p.quantity + stock.price * parseInt(newQty)) / (p.quantity + parseInt(newQty))) }
+          p.symbol === symbolUpper
+            ? { ...p, quantity: p.quantity + parseInt(newQty), avgPrice: ((p.avgPrice * p.quantity + priceToUse * parseInt(newQty)) / (p.quantity + parseInt(newQty))) }
             : p
         )
       );
     } else {
       setPortfolio([...portfolio, {
-        symbol: stock.symbol,
-        name: stock.name,
+        symbol: symbolUpper,
+        name: nameToUse,
         quantity: parseInt(newQty),
-        avgPrice: stock.price,
-        currentPrice: stock.price,
-        sector: stock.sector,
+        avgPrice: priceToUse * 0.95, // Mock slightly lower buy price
+        currentPrice: priceToUse,
+        sector: sectorToUse,
       }]);
     }
     setNewSymbol("");
@@ -151,38 +197,84 @@ export default function PortfolioPage() {
             <p className="mt-1 text-muted-foreground">Dummy portfolio — tweak stocks and re-analyze anytime</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => setShowAddStock(!showAddStock)} className="gap-1">
-              <Plus className="h-3.5 w-3.5" /> Add Stock
-            </Button>
             <Button size="sm" className="gap-1 glow-green" onClick={() => setShowAnalysis(!showAnalysis)}>
               <Sparkles className="h-3.5 w-3.5" /> {showAnalysis ? "Hide" : "Run"} AI Analysis
             </Button>
           </div>
         </div>
 
-        {/* Add Stock */}
-        {showAddStock && (
-          <div className="glass-card mb-4 p-4 flex gap-3 items-end">
-            <div className="flex-1">
-              <label className="text-xs text-muted-foreground mb-1 block">Symbol</label>
-              <Input
-                placeholder="e.g., SUNPHARMA"
-                value={newSymbol}
-                onChange={(e) => setNewSymbol(e.target.value.toUpperCase())}
-                className="bg-background"
-              />
+        {/* Import Portfolio Section */}
+        {uploadState === 'idle' && (
+          <div className="mb-6 flex flex-col sm:flex-row items-center justify-between rounded-xl border border-blue-100 bg-[#f8faff] p-5 shadow-sm dark:border-blue-900/40 dark:bg-blue-950/20">
+            <div className="flex items-center gap-4 w-full">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#e0eafe] text-[#0f62fe] dark:bg-blue-900/50 dark:text-blue-400">
+                <Upload className="h-5 w-5" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-heading text-base font-bold text-slate-800 dark:text-slate-200">Import Your Portfolio</h3>
+                <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mt-1">Upload CSV, PDF, or screenshot of your holdings</p>
+              </div>
             </div>
-            <div className="w-32">
-              <label className="text-xs text-muted-foreground mb-1 block">Quantity</label>
-              <Input
-                type="number"
-                placeholder="Qty"
-                value={newQty}
-                onChange={(e) => setNewQty(e.target.value)}
-                className="bg-background"
+            <div className="mt-4 sm:mt-0 w-full sm:w-auto shrink-0">
+              <input 
+                type="file" 
+                className="hidden" 
+                ref={fileInputRef} 
+                onChange={handleFileUpload}
+                accept=".csv,.pdf,image/*" 
               />
+              <Button 
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full sm:w-auto bg-[#0f62fe] text-white hover:bg-[#0353e9] h-10 px-6 rounded-md font-medium shadow-sm transition-colors"
+              >
+                Choose File
+              </Button>
             </div>
-            <Button onClick={handleAddStock} className="glow-green">Add</Button>
+          </div>
+        )}
+
+        {uploadState === 'uploading' && (
+          <div className="mb-6 flex items-center justify-center rounded-xl border border-blue-100 bg-[#f8faff] p-8 shadow-sm dark:border-blue-900/40 dark:bg-blue-950/20">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="h-8 w-8 text-[#0f62fe] animate-spin" />
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Reading your file...</p>
+            </div>
+          </div>
+        )}
+
+        {uploadState === 'preview' && uploadedFile && (
+          <div className="mb-6 flex flex-col sm:flex-row items-center justify-between rounded-xl border border-blue-100 bg-[#f8faff] p-5 shadow-sm dark:border-blue-900/40 dark:bg-blue-950/20">
+            <div className="flex items-center gap-4 w-full">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#e0eafe] text-[#0f62fe] dark:bg-blue-900/50 dark:text-blue-400">
+                <FileText className="h-5 w-5" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-heading text-base font-bold text-slate-800 dark:text-slate-200">File Ready for Import</h3>
+                <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mt-1 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px] sm:max-w-xs cursor-default" title={uploadedFile.name}>
+                  {uploadedFile.name} ({(uploadedFile.size / 1024).toFixed(1)} KB)
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 sm:mt-0 w-full sm:w-auto flex shrink-0 gap-3">
+              <Button variant="outline" className="h-10 px-6 font-medium rounded-md" onClick={cancelImport}>Cancel</Button>
+              <Button className="bg-[#0f62fe] hover:bg-[#0353e9] text-white h-10 px-6 font-medium rounded-md" onClick={confirmImport}>Confirm Import</Button>
+            </div>
+          </div>
+        )}
+
+        {uploadState === 'success' && (
+          <div className="mb-6 flex items-center justify-center rounded-xl border border-green-200 bg-green-50/50 p-6 shadow-sm dark:border-green-900/40 dark:bg-green-950/20 animate-in fade-in zoom-in duration-300">
+            <div className="flex flex-col items-center gap-2 text-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400 shadow-sm border border-green-200/50">
+                <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div className="mt-1">
+                <h3 className="font-heading text-lg font-bold text-slate-800 dark:text-slate-200">Successfully Uploaded!</h3>
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mt-1">Your portfolio insights have been updated.</p>
+              </div>
+            </div>
           </div>
         )}
 
@@ -248,6 +340,50 @@ export default function PortfolioPage() {
                 );
               })}
             </div>
+
+            {/* Add Stock Button & Form - Moved Below Holdings */}
+            {!showAddStock && (
+              <Button
+                variant="outline"
+                className="w-full mt-4 border-dashed border-2 py-6 text-muted-foreground hover:text-foreground hover:bg-accent/50 gap-2"
+                onClick={() => setShowAddStock(true)}
+              >
+                <Plus className="h-5 w-5" /> Add Stock
+              </Button>
+            )}
+
+            {showAddStock && (
+              <div className="glass-card mt-4 p-4 flex gap-3 items-end border border-primary/20 bg-background/50 shadow-sm relative">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute -top-3 -right-3 h-6 w-6 rounded-full bg-background border shadow-sm hover:bg-destructive hover:text-destructive-foreground z-10"
+                  onClick={() => setShowAddStock(false)}
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+                <div className="flex-[3]">
+                  <label className="text-xs text-muted-foreground font-medium mb-1.5 block">Symbol</label>
+                  <Input
+                    placeholder="e.g., SUNPHARMA"
+                    value={newSymbol}
+                    onChange={(e) => setNewSymbol(e.target.value.toUpperCase())}
+                    className="bg-background h-10 w-full"
+                  />
+                </div>
+                <div className="flex-1 min-w-[100px]">
+                  <label className="text-xs text-muted-foreground font-medium mb-1.5 block">Quantity</label>
+                  <Input
+                    type="number"
+                    placeholder="Qty"
+                    value={newQty}
+                    onChange={(e) => setNewQty(e.target.value)}
+                    className="bg-background h-10 w-full"
+                  />
+                </div>
+                <Button onClick={handleAddStock} className="glow-green h-10 px-6 text-sm font-medium">Add</Button>
+              </div>
+            )}
           </div>
 
           {/* Sector Chart */}
@@ -262,7 +398,8 @@ export default function PortfolioPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: "hsl(222,47%,9%)", border: "1px solid hsl(217,33%,17%)", borderRadius: 8, fontSize: 12 }}
+                    contentStyle={{ background: "hsl(222,47%,9%)", border: "1px solid hsl(217,33%,17%)", borderRadius: 8, fontSize: 12, color: "#fff" }}
+                    itemStyle={{ color: "#fff" }}
                     formatter={(v: number) => [`${v}%`, "Allocation"]}
                   />
                 </PieChart>
@@ -296,13 +433,12 @@ export default function PortfolioPage() {
               {aiInsights.map((insight, i) => (
                 <div
                   key={i}
-                  className={`glass-card p-4 border-l-4 ${
-                    insight.type === "warning" ? "border-l-warning" :
+                  className={`glass-card p-4 border-l-4 ${insight.type === "warning" ? "border-l-warning" :
                     insight.type === "positive" ? "border-l-primary" :
-                    insight.type === "risk" ? "border-l-destructive" :
-                    insight.type === "timing" ? "border-l-chart-blue" :
-                    "border-l-chart-purple"
-                  }`}
+                      insight.type === "risk" ? "border-l-destructive" :
+                        insight.type === "timing" ? "border-l-chart-blue" :
+                          "border-l-chart-purple"
+                    }`}
                 >
                   <div className="flex items-center gap-2 mb-2">
                     {insight.type === "warning" && <AlertCircle className="h-4 w-4 text-warning" />}

@@ -262,54 +262,91 @@ export const regulatoryData: RegulatoryItem[] = [
   },
 ];
 
-export const marketInsights = [
+export interface MarketInsightItem {
+  id: string;
+  title: string;
+  summary: string;
+  fullContent: string;
+  source: string;
+  sourceUrl: string;
+  category: string;
+  date: string;
+  sentiment: "positive" | "negative" | "neutral";
+  tags: string[];
+}
+
+export const marketInsights: MarketInsightItem[] = [
   {
     id: "m1",
     title: "Nifty 50 Hits All-Time High; IT and Banking Lead Rally",
     summary: "The benchmark Nifty 50 index surged past 23,500 for the first time, driven by strong buying in IT and banking heavyweights. FII inflows of ₹12,000 crore in the past week fueled the rally.",
+    fullContent: "The benchmark Nifty 50 index marked a historic milestone on Friday, surging past the 23,500 mark for the first time. The rally was primarily driven by strong buying interest in heavyweight IT and banking stocks following positive global cues.\n\nForeign Institutional Investors (FIIs) have been net buyers, infusing over ₹12,000 crore in the past week alone, signaling robust confidence in the Indian macroeconomic fundamentals. Analysts expect the momentum to continue as corporate earnings for the upcoming quarter look promising.",
+    source: "Bloomberg Quint",
+    sourceUrl: "https://bloombergquint.com",
     category: "Market Rally",
     date: "2025-03-28",
-    sentiment: "positive" as const,
+    sentiment: "positive",
+    tags: ["Nifty 50", "Stock Market", "FII", "Banking"],
   },
   {
     id: "m2",
     title: "Crude Oil Drops Below $70; Positive for Indian Markets",
     summary: "Brent crude oil prices fell below $70 per barrel for the first time in 6 months, providing relief to India's import bill and expected to positively impact inflation and fiscal deficit targets.",
+    fullContent: "Global Brent crude oil prices have fallen below the critical $70 per barrel mark for the first time in six months. This decline is largely attributed to weakening demand forecasts from major economies and increased production from non-OPEC countries.\n\nFor India, which imports over 80% of its crude oil requirements, this drop is a significant positive. It provides much-needed relief to the country's import bill, easing pressure on the current account deficit. Economists predict this will also have a favorable impact on domestic inflation, potentially giving the RBI more room to maneuver monetary policy.",
+    source: "Reuters",
+    sourceUrl: "https://reuters.com",
     category: "Commodities",
     date: "2025-03-27",
-    sentiment: "positive" as const,
+    sentiment: "positive",
+    tags: ["Crude Oil", "Commodities", "Inflation", "Macro Economy"],
   },
   {
     id: "m3",
     title: "Small-Cap Index Corrects 8% from Peak; Analysts Advise Caution",
     summary: "The Nifty Small-Cap 250 index has corrected 8% from its recent peak, with valuations still stretched at 28x forward earnings. Analysts recommend selective stock-picking over broad allocation.",
+    fullContent: "The Nifty Small-Cap 250 index has witnessed a correction of approximately 8% from its recent peak, indicating profit-booking by domestic institutional investors and retail participants. Despite the correction, the index is still trading at a stretched valuation of 28x forward earnings.\n\nMarket analysts and fund managers are advising caution, suggesting that investors should pivot towards selective stock-picking rather than maintaining a broad-based allocation in the small-cap space. Companies with strong balance sheets and clear earnings visibility are preferred in the current environment.",
+    source: "Moneycontrol",
+    sourceUrl: "https://moneycontrol.com",
     category: "Market Correction",
     date: "2025-03-26",
-    sentiment: "negative" as const,
+    sentiment: "negative",
+    tags: ["Small Caps", "Correction", "Valuation", "Stock Market"],
   },
   {
     id: "m4",
     title: "Rupee Strengthens to 82.50 Against Dollar on FII Inflows",
     summary: "The Indian rupee appreciated to 82.50 against the US dollar, its strongest level in 3 months, supported by sustained FII equity inflows and a weakening dollar index.",
+    fullContent: "The Indian rupee has shown significant strength, appreciating to 82.50 against the US dollar, marking its strongest level in the past three months. The appreciation is primarily supported by sustained foreign institutional investor (FII) inflows into Indian equities and debt markets.\n\nAdditionally, a weakening US dollar index in the global markets has provided further tailwinds for the domestic currency. A stronger rupee is expected to lower the cost of imported goods, further aiding in the containment of domestic inflation.",
+    source: "LiveMint",
+    sourceUrl: "https://livemint.com",
     category: "Currency",
     date: "2025-03-25",
-    sentiment: "positive" as const,
+    sentiment: "positive",
+    tags: ["Currency", "INR", "USD", "FII"],
   },
   {
     id: "m5",
     title: "Gold Prices Surge Past ₹72,000 Per 10 Grams on Global Uncertainty",
     summary: "Domestic gold prices reached a new all-time high of ₹72,300 per 10 grams, driven by geopolitical tensions and central bank buying globally. Silver also rallied to ₹85,000 per kg.",
+    fullContent: "Domestic gold prices have surged to a new all-time high, crossing the ₹72,000 mark to reach ₹72,300 per 10 grams in the retail market. This rally is largely driven by escalating geopolitical tensions in the Middle East and strong, continuous buying by central banks globally as a safe-haven asset.\n\nFollowing the trend in gold, silver prices have also seen a sharp rally, crossing ₹85,000 per kilogram. Market experts suggest that as long as global uncertainties persist, precious metals will continue to find strong support at lower levels.",
+    source: "Economic Times",
+    sourceUrl: "https://economictimes.com",
     category: "Commodities",
     date: "2025-03-24",
-    sentiment: "neutral" as const,
+    sentiment: "neutral",
+    tags: ["Gold", "Silver", "Commodities", "Safe Haven"],
   },
   {
     id: "m6",
     title: "FPI Net Buyers for Third Consecutive Month; Invest ₹35,000 Crore in March",
     summary: "Foreign Portfolio Investors remained net buyers in Indian equities for the third consecutive month, investing ₹35,000 crore in March so far, signaling renewed confidence in India's growth story.",
+    fullContent: "Foreign Portfolio Investors (FPIs) have remained robust net buyers of Indian equities for the third consecutive month, injecting over ₹35,000 crore in March alone. This sustained inflow signals renewed and growing confidence in India's macroeconomic stability and growth narrative among global investors.\n\nThe inflows have been broad-based, with significant investments directed towards the financial services, capital goods, and automobile sectors. This strong FPI participation is a key factor supporting the current resilience and upward momentum of the benchmark indices.",
+    source: "Business Standard",
+    sourceUrl: "https://business-standard.com",
     category: "FII Activity",
     date: "2025-03-23",
-    sentiment: "positive" as const,
+    sentiment: "positive",
+    tags: ["FPI", "FII", "Investment", "Equities"],
   },
 ];
 

@@ -155,7 +155,8 @@ export default function InvestmentAnalyzer() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: "hsl(222,47%,9%)", border: "1px solid hsl(217,33%,17%)", borderRadius: 8, fontSize: 12 }}
+                    contentStyle={{ background: "hsl(222,47%,9%)", border: "1px solid hsl(217,33%,17%)", borderRadius: 8, fontSize: 12, color: "#fff" }}
+                    itemStyle={{ color: "#fff" }}
                     formatter={(v: number) => [`${v}%`, "Allocation"]}
                   />
                 </PieChart>
@@ -178,7 +179,8 @@ export default function InvestmentAnalyzer() {
                   <XAxis type="number" tick={{ fontSize: 10, fill: "hsl(215,20%,55%)" }} />
                   <YAxis dataKey="name" type="category" width={60} tick={{ fontSize: 10, fill: "hsl(215,20%,55%)" }} />
                   <Tooltip
-                    contentStyle={{ background: "hsl(222,47%,9%)", border: "1px solid hsl(217,33%,17%)", borderRadius: 8, fontSize: 12 }}
+                    contentStyle={{ background: "hsl(222,47%,9%)", border: "1px solid hsl(217,33%,17%)", borderRadius: 8, fontSize: 12, color: "#fff" }}
+                    itemStyle={{ color: "#fff" }}
                     formatter={(v: number) => [`₹${v}K`, "Amount"]}
                   />
                   <Bar dataKey="amount" fill="hsl(160,84%,39%)" radius={[0, 4, 4, 0]} />

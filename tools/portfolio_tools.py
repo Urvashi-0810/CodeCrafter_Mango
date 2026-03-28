@@ -77,33 +77,34 @@ class PortfolioParsingTools:
             return {"success": False, "error": str(e)}
     
     @staticmethod
-    def classify_sectors(holdings: List[str]) -> Dict[str, str]:
-        """Classify holdings into sectors"""
-        sector_mapping = {
-            "INFY": "IT",
-            "TCS": "IT",
-            "WIPRO": "IT",
-            "RELIANCE": "Energy",
-            "HDFC": "Finance",
-            "ICICIBANK": "Finance",
-            "SBIN": "Finance",
-            "BAJAJFINSV": "Finance",
-            "BHARTIARTL": "Telecom",
-            "JIO": "Telecom",
-            "MARUTI": "Auto",
-            "TATAMOTORS": "Auto",
-            "ADANIGREEN": "Energy",
-            "POWERGRID": "Energy",
-            "ITC": "FMCG",
-            "HUL": "FMCG",
-            "NESTLEIND": "FMCG"
-        }
-        
+    def fetch_sector_from_api(symbol: str):
+        import yfinance as yf
+        try:
+            ticker = yf.Ticker(symbol + ".NS")
+            info = ticker.info
+            return info.get("sector", "Unknown")
+        except:
+            return "Unknown"
+
+    @classmethod
+    def classify_sectors(cls, holdings):
         classified = {}
-        for holding in holdings:
-            symbol = holding.upper()
-            classified[holding] = sector_mapping.get(symbol, "Unknown")
-        
+
+        for symbol in holdings:
+            symbol = symbol.upper()
+
+            # Check cache first
+            if symbol in cls.sector_cache:
+                classified[symbol] = cls.sector_cache[symbol]
+                continue
+
+            # Fetch dynamically
+            sector = cls.fetch_sector_from_api(symbol)
+
+            # Store in cache
+            cls.sector_cache[symbol] = sector
+            classified[symbol] = sector
+
         return classified
     
     @staticmethod

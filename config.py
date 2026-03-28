@@ -10,6 +10,7 @@ class Config:
     FLASK_ENV = "production"
     GEMINI_MODEL = "gemini-pro"
     GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+    FIRECRAWL_API_KEY = os.getenv("FIRECRAWL_API_KEY")
     
 class DevelopmentConfig(Config):
     """Development configuration"""

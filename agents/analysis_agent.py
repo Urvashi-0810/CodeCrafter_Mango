@@ -30,6 +30,7 @@ class AnalysisAgent:
     
     def calculate_metrics(self, portfolio: dict) -> dict:
         """Calculate key portfolio metrics"""
+        # print(f"Calculating portfolio metrics for portfolio: {portfolio}")
         return {
             "total_investment": self.analysis_tools.calculate_total_investment(portfolio),
             "current_value": self.analysis_tools.calculate_current_value(portfolio),

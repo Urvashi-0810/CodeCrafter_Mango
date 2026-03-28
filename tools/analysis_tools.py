@@ -5,10 +5,24 @@ from datetime import datetime
 
 class AnalysisTools:
     """Tools for portfolio analysis and metrics calculation"""
+
+    @staticmethod
+    def _normalize_portfolio(portfolio: Dict[str, Any]) -> Dict[str, Any]:
+        """Normalize alternate portfolio shapes used by upstream agents."""
+        if not isinstance(portfolio, dict):
+            return {}
+
+        if isinstance(portfolio.get("holdings"), list) and "stocks" not in portfolio:
+            normalized = dict(portfolio)
+            normalized["stocks"] = portfolio.get("holdings", [])
+            return normalized
+
+        return portfolio
     
     @staticmethod
     def calculate_total_investment(portfolio: Dict[str, Any]) -> float:
         """Calculate total investment amount"""
+        portfolio = AnalysisTools._normalize_portfolio(portfolio)
         total = 0
         
         # Stocks
@@ -32,6 +46,7 @@ class AnalysisTools:
     @staticmethod
     def calculate_current_value(portfolio: Dict[str, Any]) -> float:
         """Calculate current portfolio value"""
+        portfolio = AnalysisTools._normalize_portfolio(portfolio)
         current_value = 0
         
         for stock in portfolio.get("stocks", []):
@@ -66,11 +81,12 @@ class AnalysisTools:
     @staticmethod
     def calculate_sector_allocation(portfolio: Dict[str, Any]) -> Dict[str, float]:
         """Calculate sector-wise allocation"""
+        portfolio = AnalysisTools._normalize_portfolio(portfolio)
         sector_values = {}
         total_value = AnalysisTools.calculate_current_value(portfolio)
         
         for stock in portfolio.get("stocks", []):
-            sector = stock.get("sector", "Unknown")
+            sector = stock.get("sector") or "Unknown"
             value = stock.get("quantity", 0) * stock.get("current_price", stock.get("buy_price", 0))
             
             if sector not in sector_values:
@@ -87,6 +103,7 @@ class AnalysisTools:
     @staticmethod
     def calculate_risk_score(portfolio: Dict[str, Any]) -> float:
         """Calculate portfolio risk score (0-100)"""
+        portfolio = AnalysisTools._normalize_portfolio(portfolio)
         risk_score = 0
         
         # High volatility stocks = higher risk
@@ -113,13 +130,16 @@ class AnalysisTools:
     @staticmethod
     def calculate_diversification_score(portfolio: Dict[str, Any]) -> float:
         """Calculate diversification score (0-100)"""
+        portfolio = AnalysisTools._normalize_portfolio(portfolio)
         diversification = 0
         
         # Number of different stocks
+        # print(f"Stocks in portfolio: {portfolio.get('stocks', [])}")
         stock_count = len(portfolio.get("stocks", []))
         diversification += min(stock_count * 3, 25)
         
         # Sector diversity
+        # print(f"Calculating sector allocation for diversification score...")
         allocation = AnalysisTools.calculate_sector_allocation(portfolio)
         unique_sectors = len(allocation)
         diversification += min(unique_sectors * 4, 25)
@@ -174,6 +194,7 @@ class AnalysisTools:
     @staticmethod
     def calculate_asset_allocation(portfolio: Dict[str, Any]) -> Dict[str, float]:
         """Calculate asset class allocation"""
+        portfolio = AnalysisTools._normalize_portfolio(portfolio)
         total_value = AnalysisTools.calculate_current_value(portfolio)
         
         stock_value = sum(s.get("quantity", 0) * s.get("current_price", s.get("buy_price", 0)) 
@@ -195,6 +216,8 @@ class AnalysisTools:
     @staticmethod
     def calculate_portfolio_health_score(portfolio: Dict[str, Any]) -> Dict[str, Any]:
         """Calculate overall portfolio health score"""
+        portfolio = AnalysisTools._normalize_portfolio(portfolio)
+        # print(f"Calculating portfolio health score for portfolio: {portfolio}")
         diversification = AnalysisTools.calculate_diversification_score(portfolio)
         risk = AnalysisTools.calculate_risk_score(portfolio)
         
@@ -214,6 +237,8 @@ class AnalysisTools:
     @staticmethod
     def generate_analysis_report(portfolio: Dict[str, Any]) -> Dict[str, Any]:
         """Generate comprehensive portfolio analysis report"""
+        portfolio = AnalysisTools._normalize_portfolio(portfolio)
+        # print(f"Generating portfolio analysis report... {portfolio}")
         return {
             "timestamp": datetime.now().isoformat(),
             "total_investment": AnalysisTools.calculate_total_investment(portfolio),

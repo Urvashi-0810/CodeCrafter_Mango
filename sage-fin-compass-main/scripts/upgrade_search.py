@@ -1,4 +1,8 @@
-import { useState, useMemo } from "react";
+import sys
+
+file_path = 'c:/Users/urvas/OneDrive/Desktop/CodeCrafters/CodeCrafter_Mango/sage-fin-compass-main/src/pages/Search.tsx'
+
+content = """import { useState, useMemo } from "react";
 import { Search as SearchIcon, ExternalLink, TrendingUp, TrendingDown, Minus, Plus, BookmarkPlus, Filter, FileText, Download, BarChart3, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -367,3 +371,9 @@ export default function SearchPage() {
     </div>
   );
 }
+"""
+
+with open(file_path, 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print("Search page completely upgraded.")

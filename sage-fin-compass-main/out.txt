@@ -1,0 +1,80 @@
+﻿
+> vite_react_shadcn_ts@0.0.0 build
+> vite build
+
+[36mvite v5.4.19 [32mbuilding for production...[36m[39m
+transforming...
+node.exe : Browserslist: 
+browsers data (caniuse-lite) 
+is 9 months old. Please run:
+At line:1 char:1
++ & 
+"C:\nvm4w\nodejs/node.exe" "C
+:\nvm4w\nodejs/node_modules/n
+pm/bin/np ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (Browser  
+  slist: b...ld. Please ru   
+ n::String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+  npx 
+update-browserslist-db@latest
+  Why you should do it 
+regularly: https://github.com
+/browserslist/update-db#readm
+e
+[32mΓ£ô[39m 76 modules transformed.
+[31mx[39m Build failed in 
+1.46s
+[31merror during build:
+[31m[vite:load-fallback] 
+Could not load C:\Users\urvas
+\OneDrive\Desktop\CodeCrafter
+s\CodeCrafter_Mango\sage-fin-
+compass-main\src/components/C
+ompanyDashboard (imported by 
+src/pages/Search.tsx): 
+ENOENT: no such file or 
+directory, open 'C:\Users\urv
+as\OneDrive\Desktop\CodeCraft
+ers\CodeCrafter_Mango\sage-fi
+n-compass-main\src\components
+\CompanyDashboard'[31m
+    at async open (node:inter
+nal/fs/promises:642:25)
+    at async Object.readFile 
+(node:internal/fs/promises:12
+79:14)
+    at async Object.load (fil
+e:///C:/Users/urvas/OneDrive/
+Desktop/CodeCrafters/CodeCraf
+ter_Mango/sage-fin-compass-ma
+in/node_modules/vite/dist/nod
+e/chunks/dep-C6uTJdX2.js:6534
+1:25)
+    at async PluginDriver.hoo
+kFirstAndGetPlugin (file:///C
+:/Users/urvas/OneDrive/Deskto
+p/CodeCrafters/CodeCrafter_Ma
+ngo/sage-fin-compass-main/nod
+e_modules/rollup/dist/es/shar
+ed/node-entry.js:20630:28)
+    at async file:///C:/Users
+/urvas/OneDrive/Desktop/CodeC
+rafters/CodeCrafter_Mango/sag
+e-fin-compass-main/node_modul
+es/rollup/dist/es/shared/node
+-entry.js:19750:33
+    at async Queue.work (file
+:///C:/Users/urvas/OneDrive/D
+esktop/CodeCrafters/CodeCraft
+er_Mango/sage-fin-compass-mai
+n/node_modules/rollup/dist/es
+/shared/node-entry.js:20840:3
+2)[39m

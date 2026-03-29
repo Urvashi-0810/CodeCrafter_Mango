@@ -604,7 +604,7 @@ export default function PortfolioPage() {
             <div className="bg-primary/10 dark:bg-primary/10 border border-primary/20 dark:border-primary/30 rounded-xl p-6 mt-6 shadow-sm">
               <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4">Next Steps</h3>
               <ol className="list-decimal list-outside ml-4 space-y-2.5 text-sm text-slate-600 dark:text-slate-400 font-medium font-sans">
-                {isConcentrated ? <li>Execute recommended rebalancing actions</li> : <li><strike className="text-slate-400">Execute recommended rebalancing actions</strike> <span className="text-green-600 ml-1">✓ Done</span></li>}
+                {isConcentrated ? <li>Execute recommended rebalancing actions</li> : <li><s className="text-slate-400">Execute recommended rebalancing actions</s> <span className="text-green-600 ml-1">✓ Done</span></li>}
                 <li>Review quarterly earnings for top sector holdings</li>
                 <li>Set up automated dividend reinvestment</li>
                 <li>Schedule monthly portfolio review</li>

@@ -92,19 +92,66 @@ export default function Index() {
           </div>
 
           {/* Stats */}
-          <div className="mx-auto mt-16 grid max-w-3xl grid-cols-2 gap-4 md:grid-cols-4">
-            {[
-              { label: "Data Sources", value: "50+" },
-              { label: "Companies", value: "5,000+" },
-              { label: "Reports Analyzed", value: "1M+" },
-              { label: "Active Users", value: "10K+" },
-            ].map((s) => (
-              <div key={s.label} className="glass-card p-4">
-                <div className="font-heading text-2xl font-bold text-primary">{s.value}</div>
-                <div className="text-xs text-muted-foreground">{s.label}</div>
-              </div>
-            ))}
-          </div>
+<div className="relative mt-24 mb-24 px-4">
+  {/* 1. Background Ambient Glow - Makes the section pop in Dark Mode */}
+  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-full bg-emerald-500/5 dark:bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+
+  {/* 2. The Glass Container */}
+  <div className="max-w-5xl mx-auto py-10 px-8 rounded-[2rem] border border-slate-200/60 dark:border-white/5 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.03)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.2)]">
+    
+    {/* Section Label */}
+    <div className="flex justify-center mb-10">
+  <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full 
+                   bg-emerald-50/50 dark:bg-emerald-500/10 
+                   text-[11px] font-extrabold uppercase tracking-widest 
+                   text-emerald-700 dark:text-emerald-400 
+                   border border-emerald-200/50 dark:border-emerald-500/20 
+                   shadow-sm backdrop-blur-sm">
+    {/* Added a small static green dot for visual balance */}
+    <span className="relative flex h-2 w-2">
+      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+    </span>
+    Live Market Connectivity
+  </span>
+</div>
+    
+    {/* Logo Grid */}
+    <div className="flex flex-wrap justify-center items-center gap-10 md:gap-20 opacity-80 grayscale hover:grayscale-0 transition-all duration-700 ease-in-out">
+      
+      {/* NSE */}
+     <a href="https://www.nseindia.com" target="_blank" rel="noopener noreferrer" 
+         className="group cursor-pointer no-underline transform hover:scale-110 transition-all">
+        <span className="text-xl font-bold tracking-tighter text-slate-800 dark:text-slate-100 group-hover:text-emerald-500 transition-colors">NSE</span>
+      </a>
+
+      {/* BSE */}
+      <a href="https://www.bseindia.com" target="_blank" rel="noopener noreferrer" 
+         className="group cursor-pointer no-underline transform hover:scale-110 transition-all">
+        <span className="text-xl font-bold tracking-tighter text-slate-800 dark:text-slate-100 group-hover:text-blue-500 transition-colors">BSE</span>
+      </a>
+
+      {/* NASDAQ */}
+      <a href="https://www.nasdaq.com" target="_blank" rel="noopener noreferrer" 
+         className="group cursor-pointer no-underline transform hover:scale-110 transition-all">
+        <span className="text-xl font-bold tracking-tighter text-slate-800 dark:text-slate-100 group-hover:text-emerald-400 transition-colors">NASDAQ</span>
+      </a>
+
+      {/* REUTERS */}
+      <a href="https://www.reuters.com" target="_blank" rel="noopener noreferrer" 
+         className="group cursor-pointer no-underline transform hover:scale-110 transition-all">
+        <span className="text-xl font-bold tracking-tight text-slate-800 dark:text-slate-100 group-hover:text-orange-500 transition-colors">REUTERS</span>
+      </a>
+
+      {/* SEC */}
+      <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer" 
+         className="group cursor-pointer no-underline transform hover:scale-110 transition-all">
+        <span className="text-xl font-bold tracking-tighter text-slate-800 dark:text-slate-100 group-hover:text-blue-400 transition-colors">SEC</span>
+      </a>
+
+    </div>
+  </div>
+</div>
         </div>
       </section>
 
@@ -117,14 +164,34 @@ export default function Index() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {features.map((f) => (
             <Link key={f.to} to={f.to} className="group">
-              <div className="glass-card h-full p-6 transition-all hover:border-primary/50 hover:glow-green">
-                <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${f.color} opacity-80`}>
-                  <f.icon className="h-6 w-6 text-foreground" />
+              <div className="group relative glass-card h-full p-6 transition-all duration-500 ease-out 
+                              hover:-translate-y-3 hover:scale-[1.02] 
+                              hover:border-emerald-500/60 hover:shadow-[0_20px_50px_rgba(16,185,129,0.15)] 
+                              hover:bg-white/[0.05] cursor-pointer overflow-hidden">
+                
+                {/* Hover Glow Effect: This adds a soft light behind the icon when you hover */}
+                <div className="absolute -inset-px bg-gradient-to-r from-emerald-500/10 to-blue-500/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                <div className={`relative z-10 mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl 
+                                bg-gradient-to-br ${f.color} shadow-lg transition-all duration-500 
+                                group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-emerald-500/20`}>
+                  <f.icon className="h-7 w-7 text-white" />
                 </div>
-                <h3 className="font-heading text-lg font-semibold">{f.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
-                <div className="mt-4 flex items-center gap-1 text-sm font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                  Explore <ArrowRight className="h-3.5 w-3.5" />
+
+                <h3 className="relative z-10 font-heading text-xl font-bold tracking-tight transition-colors duration-300 group-hover:text-emerald-400">
+                  {f.title}
+                </h3>
+                
+                <p className="relative z-10 mt-2 text-sm text-muted-foreground leading-relaxed transition-colors duration-300 group-hover:text-foreground/90">
+                  {f.desc}
+                </p>
+
+                {/* Explore Link: Now with a dramatic slide-in and arrow-bounce */}
+                <div className="relative z-10 mt-6 flex items-center gap-2 text-sm font-bold text-emerald-500 
+                                opacity-0 transition-all duration-500 transform translate-y-2 
+                                group-hover:opacity-100 group-hover:translate-y-0">
+                  <span className="uppercase tracking-wider">Explore</span>
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </div>
               </div>
             </Link>
@@ -168,15 +235,14 @@ export default function Index() {
           <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-chart-blue/10" />
           <div className="relative">
             <Globe className="mx-auto mb-4 h-10 w-10 text-primary animate-float" />
-            <h2 className="font-heading text-2xl font-bold">For Individual Investors & Financial Institutions</h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-              Whether you're tracking your personal portfolio or need institutional-grade regulatory intelligence, 
-              SmartFinance has the tools you need.
-            </p>
+           <h2 className="font-heading text-2xl font-bold">Institutional Regulatory & Compliance Hub</h2>
+              <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+                Monitor real-time SEBI mandates, RBI circulars, and institutional policy shifts with our AI-summarized compliance engine.
+              </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <Link to="/search">
+              <Link to="/regulatory">
                 <Button className="gap-2 glow-green">
-                  <TrendingUp className="h-4 w-4" /> Get Started Free
+                  <TrendingUp className="h-4 w-4" /> Access Regulatory Terminal
                 </Button>
               </Link>
             </div>

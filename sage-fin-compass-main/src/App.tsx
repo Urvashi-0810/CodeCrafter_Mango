@@ -10,6 +10,7 @@ import MarketInsightsPage from "./pages/MarketInsights.tsx";
 import RegulatoryPage from "./pages/Regulatory.tsx";
 import PortfolioPage from "./pages/Portfolio.tsx";
 import InvestmentAnalyzerPage from "./pages/InvestmentAnalyzer.tsx";
+import LearnPage from "./pages/Learn.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/regulatory" element={<RegulatoryPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/investment-analyzer" element={<InvestmentAnalyzerPage />} />
+          <Route path="/learn" element={<LearnPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { TrendingUp, Search, Eye, BarChart3, Shield, Briefcase, PieChart, Menu, X, Sun, Moon } from "lucide-react";
+import { TrendingUp, Search, Eye, BarChart3, Shield, Briefcase, PieChart, Menu, X, Sun, Moon, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/useTheme";
 
@@ -11,6 +11,7 @@ const navLinks = [
   { to: "/regulatory", label: "Regulatory", icon: Shield },
   { to: "/portfolio", label: "Portfolio", icon: Briefcase },
   { to: "/investment-analyzer", label: "Investment Analyzer", icon: PieChart },
+  { to: "/learn", label: "Learn", icon: BookOpen },
 ];
 
 export default function Navbar() {
@@ -20,7 +21,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+      <div className="w-full flex h-16 items-center justify-between px-6 lg:px-12 xl:px-16">
         <Link to="/" className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
             <TrendingUp className="h-5 w-5 text-primary-foreground" />

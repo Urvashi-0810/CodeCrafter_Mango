@@ -21,7 +21,7 @@ export default function MarketInsightsPage() {
           <Button variant="ghost" className="mb-4 gap-2" onClick={() => setSelectedInsight(null)}>
             <ArrowLeft className="h-4 w-4" /> Back to Market Insights
           </Button>
-          <div className="glass-card p-6">
+          <div className="glass-card p-5">
             <div className="flex items-center gap-2 mb-4">
               <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full ${
                   selectedInsight.sentiment === "positive" ? "bg-primary/20" : selectedInsight.sentiment === "negative" ? "bg-destructive/20" : "bg-warning/20"
@@ -75,7 +75,7 @@ export default function MarketInsightsPage() {
       <Navbar />
       <TickerBar />
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full max-w-[1600px] mx-auto px-6 lg:px-10 py-6">
         <div className="mb-8">
           <h1 className="font-heading text-3xl font-bold flex items-center gap-2">
             <BarChart3 className="h-8 w-8 text-primary" /> Market Insights

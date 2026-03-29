@@ -214,7 +214,7 @@ export default function PortfolioPage() {
       <div className="min-h-screen bg-background">
         <Navbar />
         <TickerBar />
-        <div className="container mx-auto px-4 py-8">
+        <div className="w-full max-w-[1600px] mx-auto px-6 lg:px-10 py-6">
           <h1 className="font-heading text-3xl font-bold flex items-center gap-2 mb-6">
             <Briefcase className="h-8 w-8 text-primary" /> Portfolio Analyzer
           </h1>
@@ -252,7 +252,7 @@ export default function PortfolioPage() {
       <Navbar />
       <TickerBar />
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full max-w-[1600px] mx-auto px-6 lg:px-10 py-6">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="font-heading text-3xl font-bold flex items-center gap-2">
@@ -507,7 +507,7 @@ export default function PortfolioPage() {
         {activeTab === 'analysis' && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="glass-card p-6">
+              <div className="glass-card p-5">
                  <h3 className="font-heading text-lg font-bold flex items-center gap-2 mb-6"><BarChart2 className="h-5 w-5 text-primary"/> Sector Allocation</h3>
                  <div className="space-y-5">
                    {sortedSectors.map(s => (
@@ -523,7 +523,7 @@ export default function PortfolioPage() {
                    ))}
                  </div>
               </div>
-              <div className="glass-card p-6 relative overflow-hidden">
+              <div className="glass-card p-5 relative overflow-hidden">
                  <div className={`absolute top-0 left-0 w-1.5 h-full ${isConcentrated ? 'bg-orange-400' : 'bg-green-400'} transition-colors`}/>
                  <h3 className="font-heading text-lg font-bold flex items-center gap-2 mb-6 ml-2"><AlertTriangle className={`h-5 w-5 ${isConcentrated ? 'text-orange-500' : 'text-green-500'}`}/> Risk Assessment</h3>
                  <div className="space-y-5 ml-2">
@@ -574,7 +574,7 @@ export default function PortfolioPage() {
                ))}
             </div>
             
-            <div className="glass-card p-6 mt-6">
+            <div className="glass-card p-5 mt-6">
                <h3 className="font-heading text-lg font-bold mb-6">Portfolio Analysis Summary</h3>
                <div className="grid gap-8 md:grid-cols-2">
                  <div>

@@ -12,11 +12,11 @@ from tools.adk_tools import (
 )
 
 # Create tool instances
-parse_csv_tool = FunctionTool(parse_portfolio_from_csv)
+parse_csv_tool  = FunctionTool(parse_portfolio_from_csv)
 market_data_tool = FunctionTool(fetch_complete_market_data)
-metrics_tool = FunctionTool(calculate_portfolio_metrics)
-report_tool = FunctionTool(generate_analysis_report)
-simulate_tool = FunctionTool(simulate_returns)
+metrics_tool    = FunctionTool(calculate_portfolio_metrics)
+report_tool     = FunctionTool(generate_analysis_report)
+simulate_tool   = FunctionTool(simulate_returns)
 
 # ========== Step 1: Parse Portfolio ==========
 parse_agent = Agent(
@@ -66,17 +66,26 @@ recommendation_agent = Agent(
     name="recommendation_agent",
     model="gemini-2.5-flash",
     instruction="""
-You are an expert investment advisor. You will receive three inputs: portfolio (JSON), market data (JSON), and analysis (JSON). Based on these, provide specific, actionable recommendations covering:
-- Stocks to add, remove, or reduce exposure
-- Sector diversification improvements
-- Mutual fund / ETF allocation
-- Gold and bond allocation
-- Risk reduction strategies
-- Buy/sell timing suggestions
+You are an expert investment advisor. You will receive portfolio (JSON), market data (JSON), and analysis (JSON) from previous steps.
 
-Output your recommendations in clear bullet points.
+Output ONLY a valid JSON string with this exact structure, no extra text:
+{
+  "recommendations": [
+    {
+      "action": "add" | "reduce" | "remove",
+      "symbol": "SYMBOL",
+      "shares": 20,
+      "reason": "Short reason text",
+      "strategy": "Risk Diversification" | "Dividend Optimization" | "Portfolio Rebalancing" | "Tax-Loss Harvesting Opportunity" | "Sector Expansion",
+      "priority": "High" | "Medium" | "Low"
+    }
+  ],
+  "ai_summary": "One sentence overall recommendation summary",
+  "strengths": ["strength 1", "strength 2"],
+  "areas_to_improve": ["area 1", "area 2"]
+}
 """,
-    tools=[]  # No tools needed; it just reads previous outputs
+    tools=[]
 )
 
 # ========== Step 5: Simulate Returns ==========
@@ -94,7 +103,119 @@ formatter_agent = Agent(
     name="formatter_agent",
     model="gemini-2.5-flash",
     instruction="""
-You are a financial summary expert. Combine all previous outputs (portfolio, market data, analysis, recommendations, simulation) into a concise, well‑structured final report suitable for an investor. Use clear sections and bullet points. Be professional but friendly.
+You are a data formatter. Combine all previous pipeline outputs into a single structured JSON response for a financial UI.
+
+Output ONLY valid JSON, no markdown, no extra text.
+
+CRITICAL RULES — read before filling any field:
+1. NEVER invent, assume, or hardcode values. Every field must come from the actual pipeline data.
+2. INCLUDE ALL portfolio data from parse_agent: stocks, mutual_funds, gold, bonds — pass them through unchanged.
+3. For risk_assessment fields (volatility, concentration, diversification_status, ai_status_message),
+   copy the EXACT values from analysis_agent output. Do NOT substitute your own labels.
+4. For risk_score, diversification_score, health_score — use the numeric values from analysis_agent.
+   Do NOT replace them with the example numbers below.
+5. The schema below uses placeholder example values only to show data types and field names.
+   Replace ALL example values with real pipeline data.
+
+Use this schema (field names are fixed; example values are placeholders only):
+
+{
+  "portfolio": {
+    "total_invested": 0,
+    "current_value": 0,
+    "pl_amount": 0,
+    "pl_percentage": 0,
+    "stock_count": 0,
+    "stocks": [
+      {
+        "symbol": "SYMBOL",
+        "name": "Company Name",
+        "sector": "Sector",
+        "exchange": "NSE",
+        "quantity": 0,
+        "buy_price": 0,
+        "current_price": 0,
+        "avg_price": 0,
+        "current_value": 0,
+        "pl_amount": 0,
+        "pl_percentage": 0
+      }
+    ],
+    "mutual_funds": [],
+    "gold": [],
+    "bonds": [],
+    "holdings": [
+      {
+        "symbol": "SYMBOL",
+        "name": "Company Name",
+        "sector": "Sector",
+        "exchange": "NSE",
+        "quantity": 0,
+        "buy_price": 0,
+        "current_price": 0,
+        "avg_price": 0,
+        "current_value": 0,
+        "pl_amount": 0,
+        "pl_percentage": 0
+      }
+    ]
+  },
+  "analysis": {
+    "sector_allocation": {},
+    "risk_assessment": {
+      "volatility": "<COPY EXACT VALUE FROM analysis_agent — do not change>",
+      "concentration": "<COPY EXACT VALUE FROM analysis_agent — do not change>",
+      "diversification_status": "<COPY EXACT VALUE FROM analysis_agent — do not change>",
+      "ai_status_message": "<COPY EXACT VALUE FROM analysis_agent — do not change>"
+    },
+    "risk_score": 0,
+    "diversification_score": 0,
+    "health_score": 0
+  },
+  "recommendations": {
+    "ai_summary": "",
+    "items": [
+      {
+        "action": "add",
+        "symbol": "SYMBOL",
+        "shares": 0,
+        "reason": "",
+        "strategy": "",
+        "priority": "",
+        "status": "pending"
+      }
+    ],
+    "strategies": [
+      {
+        "name": "",
+        "description": "",
+        "priority": "",
+        "status": "pending"
+      }
+    ],
+    "strengths": [],
+    "areas_to_improve": []
+  },
+  "simulation": {
+    "current_value": 0,
+    "annual_return_rate": 12,
+    "projections": [
+      {"year": 1, "projected_value": 0, "gain": 0, "gain_percentage": 0},
+      {"year": 2, "projected_value": 0, "gain": 0, "gain_percentage": 0},
+      {"year": 3, "projected_value": 0, "gain": 0, "gain_percentage": 0},
+      {"year": 4, "projected_value": 0, "gain": 0, "gain_percentage": 0},
+      {"year": 5, "projected_value": 0, "gain": 0, "gain_percentage": 0}
+    ]
+  },
+  "market_data": {}
+}
+
+Data sources:
+- portfolio (all fields: stocks, mutual_funds, gold, bonds) → from parse_agent (pass through all data)
+- analysis       → from analysis_agent (copy risk_assessment fields verbatim)
+- recommendations → from recommendation_agent
+- simulation     → from simulation_agent
+- market_data    → from market_agent (sentiment, news_headline, news_summary per symbol)
 """
 )
 

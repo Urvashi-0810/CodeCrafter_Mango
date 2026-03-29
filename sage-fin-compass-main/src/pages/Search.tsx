@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Search as SearchIcon, ExternalLink, TrendingUp, TrendingDown, Minus, Plus, BookmarkPlus, Filter, FileText, Download, BarChart3, Clock } from "lucide-react";
+import { Search as SearchIcon, ExternalLink, TrendingUp, TrendingDown, Minus, Plus, BookmarkPlus, Filter, FileText, Download, BarChart3, Clock, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -90,7 +90,7 @@ export default function SearchPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const { addToWatchlist, isInWatchlist } = useWatchlist();
 
-  const categories = ["all", "Earnings", "Deals", "Banking", "Energy", "Automobile"];
+  // const categories = ["all", "Earnings", "Deals", "Banking", "Energy", "Automobile"];
   const sectors = ["All Sectors", "Finance", "Banking", "IT", "FMCG", "Energy", "Healthcare"];
 
   const handleSearch = () => {

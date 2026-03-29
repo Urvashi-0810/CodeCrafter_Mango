@@ -27,7 +27,7 @@ export default function Navbar() {
             <TrendingUp className="h-5 w-5 text-primary-foreground" />
           </div>
           <span className="font-heading text-lg font-bold tracking-tight">
-            Smart<span className="text-primary">Finance</span>
+           Phynx
           </span>
         </Link>
 
